@@ -52,6 +52,19 @@ def test_custom_solo_guitarist():
     assert jimi.play_solo() == "wonk wonk"
 
 
+def test_to_list():
+    with open('pythonic_garage_band/twobands.json', 'r') as file:
+        bands = json.loads(file.read())
+
+    assert len(bands) == 2
+
+    Band.create_from_data(bands[0])
+    Band.create_from_data(bands[1])
+
+    assert len(Band.to_list()) == 2
+
+
+
 def test_band_str(some_band):
     assert some_band.__str__() == "Band Nirvana: This is not the last day."
 
@@ -83,6 +96,7 @@ def test_instruments(some_band):
         assert member.instrument == instruments[i]
 
 
+#@pytest.mark.slip("pending")
 def test_individual_solo(some_band):
     for member in some_band.members:
         if member.instrument == "guitar":

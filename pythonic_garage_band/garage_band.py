@@ -3,15 +3,19 @@ from abc import ABC, abstractmethod
 
 class Band:
 
-    def __init__(self, name, members):
+    instance_of_a_class = []
+
+    def __init__(self, name, members = None):
         self.name = name
         self.members = members
+        Band.instance_of_a_class.append(self)
+        print(self.instance_of_a_class)
 
     def __str__(self):
-        return self.__class__.__name__ + " " + self.name + ": This is not the last day."
+        return f"{self.__class__.__name__} {self.name}: This is not the last day."
 
     def __repr__(self):
-        return self.__class__.__name__ + " " + self.name + ": You rock."
+        return f"{self.__class__.__name__} {self.name}: You rock."
 
     def play_solos(self):
         solos = []
@@ -21,7 +25,7 @@ class Band:
 
     @classmethod
     def to_list(cls):
-        pass
+        return cls.instance_of_a_class
 
     @staticmethod
     def create_from_data(data):
@@ -36,16 +40,15 @@ class Band:
         """
 
         members_list = data["Members"]
-        if len(members_list)<=0:
-            raise Exception
-        for i, member in enumerate(members_list):
-            if member is dict:
-                if member["Instrument"] == "guitar":
-                    members_list[i] = Guitarist(member["Name"], member["Instrument"])
-                elif member["Instrument"] == "drums":
-                    members_list[i] = Drummer(member["Name"], member["Instrument"])
-                elif member["Instrument"] == "bass":
-                    members_list[i] = Bassist(member["Name"], member["Instrument"])
+        if len(members_list) > 0:
+            for i, member in enumerate(members_list):
+                if member is dict:
+                    if member["Instrument"] == "guitar":
+                        members_list[i] = Guitarist(member["Name"], member["Instrument"])
+                    elif member["Instrument"] == "drums":
+                        members_list[i] = Drummer(member["Name"], member["Instrument"])
+                    elif member["Instrument"] == "bass":
+                        members_list[i] = Bassist(member["Name"], member["Instrument"])
 
         return Band(data["Band Name"], members_list)
 
@@ -116,5 +119,10 @@ class Drummer(Musician):
         return "This is " + self.__class__.__name__ + " " + self.name
 
 
+    if __name__ == "__main__":
+        band = Band("Proud")
+        assert band.name == "Proud"
+        assert band.members == None
+        assert len(Band.to_list()) == 1
 
 
